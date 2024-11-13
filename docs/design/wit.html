@@ -383,7 +383,7 @@ print-hello&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='h
 <p>You can define your own types within an <code>interface</code> or <code>world</code>. WIT offers several ways of defining new types.</p>
 <h3 id="records"><a class="header" href="#records">Records</a></h3>
 <p>A <code>record</code> type declares a set of named fields, each of the form <code>name: type</code>, separated by commas. A record instance contains a value for every field. Field types can be built-in or user-defined. The syntax is as follows:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;record&lt;/span&gt; customer &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;record&lt;/span&gt; customer &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     id&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     name&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     picture&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;option&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
@@ -396,7 +396,7 @@ print-hello&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='h
 </blockquote>
 <h3 id="variants"><a class="header" href="#variants">Variants</a></h3>
 <p>A <code>variant</code> type declares one or more cases. Each case has a name and, optionally, a type of data associated with that case. A variant instance contains exactly one case. Cases are separated by commas. The syntax is as follows:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;variant&lt;/span&gt; allowed-destinations &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;variant&lt;/span&gt; allowed-destinations &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     none&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     any&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     restricted&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;address&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
@@ -408,7 +408,7 @@ print-hello&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='h
 </blockquote>
 <h3 id="enums"><a class="header" href="#enums">Enums</a></h3>
 <p>An <code>enum</code> type is a variant type where none of the cases have associated data:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;enum&lt;/span&gt; color &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;enum&lt;/span&gt; color &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     hot-pink&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     lime-green&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     navy-blue&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
@@ -425,7 +425,7 @@ interface.</p>
 <p>For example, we could model a blob (binary large object) as a resource. The
 following WIT defines the <code>blob</code> resource type, which contains a constructor,
 two methods, and a static function:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;resource&lt;/span&gt; blob &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;resource&lt;/span&gt; blob &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     constructor&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;init&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     write&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;bytes&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     read&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;n&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
@@ -444,7 +444,7 @@ returning a handle of the containing resource type</li>
 <p>Methods always desugar to a borrowed <code>self</code> parameter whereas constructors
 always desugar to an owned return value. For example, the <code>blob</code> resource
 <a href="#resources">above</a> could be approximated as:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;resource&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;resource&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 blob-constructor&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;bytes&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 blob-write&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;self&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;borrow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;blob&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; bytes&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 blob-read&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;self&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;borrow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;blob&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; n&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
@@ -459,7 +459,7 @@ of an owned resource drops that resource, the resource is destroyed.</p>
 </blockquote>
 <h3 id="flags"><a class="header" href="#flags">Flags</a></h3>
 <p>A <code>flags</code> type is a set of named booleans.  In an instance of the type, each flag will be either <code>true</code> or <code>false</code>.</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;flags&lt;/span&gt; allowed-methods &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;flags&lt;/span&gt; allowed-methods &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     get&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     post&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     put&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
@@ -471,8 +471,8 @@ of an owned resource drops that resource, the resource is destroyed.</p>
 </blockquote>
 <h3 id="type-aliases"><a class="header" href="#type-aliases">Type aliases</a></h3>
 <p>You can define a new named type using <code>type ... = ...</code>. This can be useful for giving shorter or more meaningful names to types:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;type&lt;/span&gt; buffer &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
-&lt;span class='hljs-type'&gt;type&lt;/span&gt; http-&lt;span class='hljs-type'&gt;result&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;result&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;http-response&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; http-error&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;type&lt;/span&gt; buffer &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;type&lt;/span&gt; http-&lt;span class='hljs-type'&gt;result&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;result&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;http-response&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; http-error&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 </code></pre>
 <h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
 <p>A function is defined by a name and a function type. Like in record fields, the name is separated from the type by a colon:</p>
@@ -492,32 +492,32 @@ lookup&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-k
 <p>A function can be declared as part of an <a href="#interfaces">interface</a>, or can be declared as an import or export in a <a href="#worlds">world</a>.</p>
 <h2 id="interfaces"><a class="header" href="#interfaces">Interfaces</a></h2>
 <p>An interface is a named set of types and functions, enclosed in braces and introduced with the <code>interface</code> keyword:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;interface&lt;/span&gt; canvas &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
-    &lt;span class='hljs-type'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; canvas &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 
-    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
         &lt;span class='hljs-variable'&gt;x&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
         &lt;span class='hljs-variable'&gt;y&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
-    &lt;span class='hljs-title function_'&gt;draw-line&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;canvas&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;from&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;to&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;draw-line&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-variable'&gt;canvas&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-variable'&gt;from&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-variable'&gt;to&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 </code></pre>
 <p>Notice that items in an interface are <em>not</em> comma-separated.</p>
 <h3 id="using-definitions-from-elsewhere"><a class="header" href="#using-definitions-from-elsewhere">Using definitions from elsewhere</a></h3>
 <p>An interface can reuse types declared in another interface via a <code>use</code> directive. The <code>use</code> directive must give the interface where the types are declared, then a dot, then a braced list of the types to be reused. The interface can then refer to the types named in the <code>use</code>.</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;interface&lt;/span&gt; types &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
-    &lt;span class='hljs-type'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
-    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; types &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
         &lt;span class='hljs-variable'&gt;x&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
         &lt;span class='hljs-variable'&gt;y&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
     &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
-&lt;span class='hljs-type'&gt;interface&lt;/span&gt; canvas &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; canvas &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;use&lt;/span&gt; types&lt;span class='hljs-punctuation'&gt;.&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;dimension&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; point&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
-    &lt;span class='hljs-type'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
-    &lt;span class='hljs-title function_'&gt;draw-line&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;canvas&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;from&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;to&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;thickness&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;draw-line&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-variable'&gt;canvas&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-variable'&gt;from&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-variable'&gt;to&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-variable'&gt;thickness&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 </code></pre>
 <blockquote>
@@ -526,15 +526,15 @@ lookup&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-k
 <p>This works across files as long as the files are in the same package (effectively, in the same directory). For information about using definitions from other packages, see <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#interfaces-worlds-and-use">the specification</a>.</p>
 <h2 id="worlds"><a class="header" href="#worlds">Worlds</a></h2>
 <p>A world describes a set of imports and exports, enclosed in braces and introduced with the <code>world</code> keyword. Roughly, a world describes the contract of a component. Exports are provided by the component, and define what consumers of the component may call; imports are things the component may call. The imports and exports may be interfaces or individual functions.</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;interface&lt;/span&gt; printer &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
-    &lt;span class='hljs-title function_'&gt;print&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;text&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; printer &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;print&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-variable'&gt;text&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
-&lt;span class='hljs-type'&gt;interface&lt;/span&gt; error-reporter &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
-    &lt;span class='hljs-title function_'&gt;report-error&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;error-message&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; error-reporter &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;report-error&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-variable'&gt;error-message&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
-&lt;span class='hljs-type'&gt;world&lt;/span&gt; multi-function-device &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;world&lt;/span&gt; multi-function-device &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-comment'&gt;// The component implements the `printer` interface&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; printer&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 
@@ -547,7 +547,7 @@ lookup&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-k
 </code></pre>
 <h3 id="interfaces-from-other-packages"><a class="header" href="#interfaces-from-other-packages">Interfaces from other packages</a></h3>
 <p>You can import and export interfaces defined in other packages. This can be done using <code>package/name</code> syntax:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;world&lt;/span&gt; http-proxy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;world&lt;/span&gt; http-proxy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; wasi&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;/&lt;/span&gt;incoming-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;import&lt;/span&gt; wasi&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;/&lt;/span&gt;outgoing-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
@@ -558,52 +558,52 @@ lookup&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-k
 <p>WIT does not define how packages are resolved - different tools may resolve them in different ways.</p>
 <h3 id="inline-interfaces"><a class="header" href="#inline-interfaces">Inline interfaces</a></h3>
 <p>Interfaces can be declared inline in a world:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;world&lt;/span&gt; toy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
-    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; example&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;interface&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;world&lt;/span&gt; toy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; example&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
         &lt;span class='hljs-title function_'&gt;do-nothing&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 </code></pre>
 <h3 id="including-other-worlds"><a class="header" href="#including-other-worlds">Including other worlds</a></h3>
 <p>You can <code>include</code> another world. This causes your world to export all that world's exports, and import all that world's imports.</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;world&lt;/span&gt; glow-in-the-dark-multi-function-device &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;world&lt;/span&gt; glow-in-the-dark-multi-function-device &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-comment'&gt;// The component provides all the same exports, and depends on&lt;/span&gt;
     &lt;span class='hljs-comment'&gt;// all the same imports, as a `multi-function-device`...&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;include&lt;/span&gt; multi-function-device&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 
     &lt;span class='hljs-comment'&gt;// ...but also exports a function to make it glow in the dark&lt;/span&gt;
-    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; &lt;span class='hljs-title function_'&gt;glow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;brightness&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; &lt;span class='hljs-title function_'&gt;glow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-variable'&gt;brightness&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 </code></pre>
 <p>As with <code>use</code> directives, you can <code>include</code> worlds from other packages.</p>
 <h2 id="packages"><a class="header" href="#packages">Packages</a></h2>
 <p>A package is a set of interfaces and worlds, potentially defined across multiple files. To declare a package, use the <code>package</code> directive to specify the package ID. This must include a namespace and name, separated by a colon, and may optionally include a semver-compliant version:</p>
-<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;example&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
-&lt;span class='hljs-type'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;example&lt;span class='hljs-punctuation'&gt;@&lt;/span&gt;&lt;span class='hljs-string'&gt;1.0.1&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+<pre><code class="language-treesitter">&lt;span class='hljs-keyword'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;example&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;example&lt;span class='hljs-punctuation'&gt;@&lt;/span&gt;&lt;span class='hljs-string'&gt;1.0.1&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 </code></pre>
 <p>If a package spans multiple files, only one file needs to contain a package declaration (but if multiple files contain declarations then they must all be the same). All files must have the <code>.wit</code> extension and must be in the same directory. For example, the following <code>documentation:http</code> package is spread across four files:</p>
 <pre><code class="language-treesitter">&lt;span class='hljs-comment'&gt;// types.wit&lt;/span&gt;
-&lt;span class='hljs-type'&gt;interface&lt;/span&gt; types &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
-    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;request&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt; &lt;span class='hljs-comment'&gt;/* ... */&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
-    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;response&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt; &lt;span class='hljs-comment'&gt;/* ... */&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; types &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;request&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt; &lt;span class='hljs-comment'&gt;/* ... */&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;response&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt; &lt;span class='hljs-comment'&gt;/* ... */&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
 &lt;span class='hljs-comment'&gt;// incoming.wit&lt;/span&gt;
-&lt;span class='hljs-type'&gt;interface&lt;/span&gt; incoming-handler &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; incoming-handler &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;use&lt;/span&gt; types&lt;span class='hljs-punctuation'&gt;.&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;request&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; response&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     &lt;span class='hljs-comment'&gt;// ...&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
 &lt;span class='hljs-comment'&gt;// outgoing.wit&lt;/span&gt;
-&lt;span class='hljs-type'&gt;interface&lt;/span&gt; outgoing-handler &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;interface&lt;/span&gt; outgoing-handler &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;use&lt;/span&gt; types&lt;span class='hljs-punctuation'&gt;.&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;request&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; response&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     &lt;span class='hljs-comment'&gt;// ...&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
 
 &lt;span class='hljs-comment'&gt;// http.wit&lt;/span&gt;
-&lt;span class='hljs-type'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;@&lt;/span&gt;&lt;span class='hljs-string'&gt;1.0.0&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;@&lt;/span&gt;&lt;span class='hljs-string'&gt;1.0.0&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 
-&lt;span class='hljs-type'&gt;world&lt;/span&gt; proxy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+&lt;span class='hljs-keyword'&gt;world&lt;/span&gt; proxy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; incoming-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
     &lt;span class='hljs-keyword'&gt;import&lt;/span&gt; outgoing-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
 &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;

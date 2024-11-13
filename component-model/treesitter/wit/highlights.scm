@@ -6,7 +6,7 @@
 (package_decl
   (id) @module)
 
-(valid_semver) @string.special
+(valid_semver) @string
 
 (world_item
   name: (id) @module)
@@ -35,28 +35,28 @@
     (func_type)))
 
 (type_item
-  alias: (id) @type.definition)
+  alias: (id) @type)
 
 (func_item
-  name: (id) @function.method)
+  name: (id) @function)
 
 (handle
   (id) @type)
 
 (named_type
-  name: (id) @variable.parameter)
+  name: (id) @variable)
 
 (record_item
   name: (id) @type)
 
 (record_field
-  name: (id) @variable.member)
+  name: (id) @variable)
 
 (flags_items
   name: (id) @type)
 
 (flags_body
-  (id) @variable.member)
+  (id) @variable)
 
 (variant_items
   name: (id) @type)
@@ -74,19 +74,19 @@
   name: (id) @type)
 
 (resource_method
-  (id) @function.method)
+  (id) @function)
 
 (resource_method
   "constructor" @constructor)
 
 (toplevel_use_item
-  "use" @keyword.import)
+  "use" @keyword)
 
 (toplevel_use_item
   alias: (id) @module)
 
 (use_item
-  "use" @keyword.import)
+  "use" @keyword)
 
 (use_path
   (id) @module)
@@ -94,7 +94,7 @@
 (use_names_item
   (id) @module)
 
-"func" @keyword.function
+"func" @keyword
 
 [
   "type"
@@ -106,16 +106,16 @@
   "enum"
   "flags"
   "variant"
-] @keyword.type
+] @keyword
 
-"static" @keyword.modifier
+"static" @keyword
 
 [
   "include"
   "import"
   "export"
   "as"
-] @keyword.import
+] @keyword
 
 [
   "u8"
@@ -138,12 +138,12 @@
   "option"
   "result"
   "borrow"
-] @type.builtin
+] @type
 
 [
   "@"
   "_"
-] @punctuation.special
+] @punctuation
 
 [
   "/"
@@ -152,7 +152,7 @@
   ","
   "."
   "->"
-] @punctuation.delimiter
+] @punctuation
 
 [
   "{"
@@ -161,6 +161,6 @@
   ")"
   ">"
   "<"
-] @punctuation.bracket
+] @punctuation
 
 "=" @operator
