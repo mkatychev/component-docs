@@ -13,3 +13,5 @@ additional-js = ["treesitter.js"]
 
 [preprocessor.treesitter]
 command = "mdbook-treesitter"
+
+[preprocessor.alerts]
