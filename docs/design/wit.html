@@ -1,0 +1,666 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>WIT - The WebAssembly Component Model</title>
+
+
+        <!-- Custom HTML head -->
+        <script defer data-domain="component-model.bytecodealliance.org" src="https://plausible.io/js/script.js"></script>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/head.hbs">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The WebAssembly Component Model</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/src/design/wit.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="an-overview-of-wit"><a class="header" href="#an-overview-of-wit">An Overview of WIT</a></h1>
+<p>The WIT (Wasm Interface Type) language is used to define Component Model <a href="#interfaces">interfaces</a> and <a href="#worlds">worlds</a>. WIT isn't a general-purpose coding language and doesn't define behaviour; it defines only <em>contracts</em> between components. This topic provides an overview of key elements of the WIT language. The official WIT specification and history can be found in the <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md"><code>WebAssembly/component-model</code> repository</a>.</p>
+<ul>
+<li><a href="#an-overview-of-wit">An Overview of WIT</a>
+<ul>
+<li><a href="#structure-of-a-wit-file">Structure of a WIT file</a></li>
+<li><a href="#comments">Comments</a></li>
+<li><a href="#documentation">Documentation</a></li>
+<li><a href="#identifiers">Identifiers</a></li>
+<li><a href="#built-in-types">Built-in types</a>
+<ul>
+<li><a href="#primitive-types">Primitive types</a></li>
+<li><a href="#lists">Lists</a></li>
+<li><a href="#options">Options</a></li>
+<li><a href="#results">Results</a></li>
+<li><a href="#tuples">Tuples</a></li>
+</ul>
+</li>
+<li><a href="#user-defined-types">User-defined types</a>
+<ul>
+<li><a href="#records">Records</a></li>
+<li><a href="#variants">Variants</a></li>
+<li><a href="#enums">Enums</a></li>
+<li><a href="#resources">Resources</a></li>
+<li><a href="#flags">Flags</a></li>
+<li><a href="#type-aliases">Type aliases</a></li>
+</ul>
+</li>
+<li><a href="#functions">Functions</a></li>
+<li><a href="#interfaces">Interfaces</a>
+<ul>
+<li><a href="#using-definitions-from-elsewhere">Using definitions from elsewhere</a></li>
+</ul>
+</li>
+<li><a href="#worlds">Worlds</a>
+<ul>
+<li><a href="#interfaces-from-other-packages">Interfaces from other packages</a></li>
+<li><a href="#inline-interfaces">Inline interfaces</a></li>
+<li><a href="#including-other-worlds">Including other worlds</a></li>
+</ul>
+</li>
+<li><a href="#packages">Packages</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="structure-of-a-wit-file"><a class="header" href="#structure-of-a-wit-file">Structure of a WIT file</a></h2>
+<p>A WIT file contains one or more <strong>interfaces</strong> or <strong>worlds</strong>. An interface or world can define <strong>types</strong> and/or <strong>functions</strong>.</p>
+<blockquote>
+<p>Types and functions can't be defined outside of interfaces or worlds.</p>
+</blockquote>
+<p>A file may optionally start with a <strong>package</strong> declaration.</p>
+<h2 id="comments"><a class="header" href="#comments">Comments</a></h2>
+<p>WIT comment syntax is similar to the one used by the C++ family of languages:</p>
+<ul>
+<li>Everything from <code>//</code> to end of line is a comment.</li>
+<li>Any text enclosed in <code>/*</code> ... <code>*/</code> is a comment.
+<ul>
+<li>Unlike the C++ family, block comments <em>can</em> be nested, e.g. <code>/* blah /* rabbit */ rhubarb */</code>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="documentation"><a class="header" href="#documentation">Documentation</a></h2>
+<p>WIT defines special comment formats for documentation:</p>
+<ul>
+<li>Everything from <code>///</code> to end of line is documentation for the following item.</li>
+<li>Any text enclosed in <code>/**</code> ... <code>*/</code> is documentation for the following item.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-comment'&gt;/// Prints "hello".&lt;/span&gt;
+print-hello&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+&lt;span class='hljs-comment'&gt;/**
+Prints "hello".
+*/&lt;/span&gt;
+print-hello&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<h2 id="identifiers"><a class="header" href="#identifiers">Identifiers</a></h2>
+<p>WIT identifiers have a slightly different set of rules from what you might be familiar with from, say, C, Rust, or Java.  These rules apply to all names - types, functions, interfaces, and worlds. (Package identifiers are a little more complex and will be covered in the <a href="#packages">Packages section</a>.)</p>
+<ul>
+<li>Identifiers are restricted to ASCII <code>kebab-case</code> - sequences of words, separated by single hyphens.
+<ul>
+<li>Double hyphens (<code>--</code>) are not allowed.</li>
+<li>Hyphens aren't allowed at the beginning or end of the sequence, only between words.</li>
+</ul>
+</li>
+<li>An identifier may be preceded by a single <code>%</code> sign.
+<ul>
+<li>This is <em>required</em> if the identifier would otherwise be a WIT keyword. For example, <code>interface</code> is <strong>not</strong> a legal identifier, but <code>%interface</code> is legal.</li>
+</ul>
+</li>
+<li>Each word in the sequence must begin with an ASCII letter, and may contain only ASCII letters and digits.
+<ul>
+<li>A word cannot begin with a digit.</li>
+<li>A word cannot contain a non-ASCII Unicode character.</li>
+<li>A word cannot contain punctuation, underscores, etc.</li>
+</ul>
+</li>
+<li>Each word must be either all <code>lowercase</code> or all <code>UPPERCASE</code>.
+<ul>
+<li>Different words in the identifier may have different cases. For example, <code>WIT-demo</code> is allowed.</li>
+</ul>
+</li>
+<li>An identifier cannot be a WIT keyword such as <code>interface</code> (unless preceded by a <code>%</code> sign).</li>
+</ul>
+<h2 id="built-in-types"><a class="header" href="#built-in-types">Built-in types</a></h2>
+<p>The types in this section are defined by the WIT language itself.</p>
+<h3 id="primitive-types"><a class="header" href="#primitive-types">Primitive types</a></h3>
+<p>WIT defines the following primitive types:</p>
+<div class="table-wrapper"><table><thead><tr><th>Identifier</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bool</code></td><td>Boolean value <code>true</code> or <code>false</code>.</td></tr>
+<tr><td><code>s8</code>, <code>s16</code>, <code>s32</code>, <code>s64</code></td><td>Signed integers of the appropriate width. For example, <code>s32</code> is a signed 32-bit integer.</td></tr>
+<tr><td><code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code></td><td>Unsigned integers of the appropriate width. For example, <code>u32</code> is an unsigned 32-bit integer.</td></tr>
+<tr><td><code>f32</code>, <code>f64</code></td><td>Floating-point numbers of the appropriate width. For example, <code>f64</code> is a 64-bit (double precision) floating-point number. See the note on <code>NaN</code>s below.</td></tr>
+<tr><td><code>char</code></td><td>Unicode character. (Specifically, a <a href="https://unicode.org/glossary/#unicode_scalar_value">Unicode scalar value</a>.)</td></tr>
+<tr><td><code>string</code></td><td>A Unicode string - that is, a finite sequence of characters.</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>The <code>f32</code> and <code>f64</code> types support the usual set of IEEE 754 single and double-precision values, except that they logically only have a single <code>nan</code> value. The exact bit-level representation of an IEEE 754 <code>NaN</code> is not guaranteed to be preserved when values pass through WIT interfaces as the singular WIT <code>nan</code> value.</p>
+</blockquote>
+<h3 id="lists"><a class="header" href="#lists">Lists</a></h3>
+<p><code>list&lt;T&gt;</code> for any type <code>T</code> denotes an ordered sequence of values of type <code>T</code>.  <code>T</code> can be any type, built-in or user-defined:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;       &lt;span class='hljs-comment'&gt;// byte buffer&lt;/span&gt;
+&lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;customer&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt; &lt;span class='hljs-comment'&gt;// a list of customers&lt;/span&gt;
+</code></pre>
+<p>This is similar to Rust <code>Vec</code>, or Java <code>List</code>.</p>
+<h3 id="options"><a class="header" href="#options">Options</a></h3>
+<p><code>option&lt;T&gt;</code> for any type <code>T</code> may contain a value of type <code>T</code>, or may contain no value.  <code>T</code> can be any type, built-in or user-defined.  For example, a lookup function might return an option, allowing for the possibility that the lookup key wasn't found:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;option&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;customer&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;
+</code></pre>
+<p>This is similar to Rust <code>Option</code>, C++ <code>std::optional</code>, or Haskell <code>Maybe</code>.</p>
+<blockquote>
+<p>This is a special case of a <a href="#variants">variant</a> type.  WIT defines it so that there is a common way of expressing it, so that you don't need to create a variant type for every value type, and to enable it to be mapped idiomatically into languages with option types.</p>
+</blockquote>
+<h3 id="results"><a class="header" href="#results">Results</a></h3>
+<p><code>result&lt;T, E&gt;</code> for any types <code>T</code> and <code>E </code>may contain a value of type <code>T</code> <em>or</em> a value of type <code>E</code> (but not both). This is typically used for "value or error" situations; for example, a HTTP request function might return a result, with the success case (the <code>T</code> type) representing a HTTP response, and the error case (the <code>E</code> type) representing the various kinds of error that might occur:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;result&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;http-response&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; http-error&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;
+</code></pre>
+<p>This is similar to Rust <code>Result</code>, or Haskell <code>Either</code>.</p>
+<blockquote>
+<p>This is a special case of a <a href="#variants">variant</a> type.  WIT defines it so that there is a common way of expressing it, so that you don't need to create a variant type for every combination of value and error types, and to enable it to be mapped idiomatically into languages with result or "either" types.</p>
+</blockquote>
+<p>Sometimes there is no data associated with one or both of the cases. For example, a <code>print</code> function could return an error code if it fails, but has nothing to return if it succeeds. In this case, you can omit the corresponding type as follows:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;result&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;     &lt;span class='hljs-comment'&gt;// no data associated with the error case&lt;/span&gt;
+&lt;span class='hljs-type'&gt;result&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;_&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;  &lt;span class='hljs-comment'&gt;// no data associated with the success case&lt;/span&gt;
+&lt;span class='hljs-type'&gt;result&lt;/span&gt;          &lt;span class='hljs-comment'&gt;// no data associated with either case&lt;/span&gt;
+</code></pre>
+<h3 id="tuples"><a class="header" href="#tuples">Tuples</a></h3>
+<p>A <code>tuple</code> type is an ordered <em>fixed length</em> sequence of values of specified types. It is similar to a <a href="#records"><em>record</em></a>, except that the fields are identified by their order instead of by names.</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;tuple&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;      &lt;span class='hljs-comment'&gt;// An integer and a string&lt;/span&gt;
+&lt;span class='hljs-type'&gt;tuple&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt; &lt;span class='hljs-comment'&gt;// An integer, then a string, then an integer&lt;/span&gt;
+</code></pre>
+<p>This is similar to tuples in Rust or OCaml.</p>
+<h2 id="user-defined-types"><a class="header" href="#user-defined-types">User-defined types</a></h2>
+<p>You can define your own types within an <code>interface</code> or <code>world</code>. WIT offers several ways of defining new types.</p>
+<h3 id="records"><a class="header" href="#records">Records</a></h3>
+<p>A <code>record</code> type declares a set of named fields, each of the form <code>name: type</code>, separated by commas. A record instance contains a value for every field. Field types can be built-in or user-defined. The syntax is as follows:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;record&lt;/span&gt; customer &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    id&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    name&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    picture&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;option&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    account-manager&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; employee&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<p>Records are similar to C or Rust <code>struct</code>s.</p>
+<blockquote>
+<p>User-defined records can't be generic (that is, parameterised by type). Only built-in types can be generic.</p>
+</blockquote>
+<h3 id="variants"><a class="header" href="#variants">Variants</a></h3>
+<p>A <code>variant</code> type declares one or more cases. Each case has a name and, optionally, a type of data associated with that case. A variant instance contains exactly one case. Cases are separated by commas. The syntax is as follows:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;variant&lt;/span&gt; allowed-destinations &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    none&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    any&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    restricted&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;address&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<p>Variants are similar to Rust <code>enum</code>s or OCaml discriminated unions. The closest C equivalent is a tagged union, but WIT both takes care of the "tag" (the case) and enforces the correct data shape for each tag.</p>
+<blockquote>
+<p>User-defined variants can't be generic (that is, parameterised by type). Only built-in types can be generic.</p>
+</blockquote>
+<h3 id="enums"><a class="header" href="#enums">Enums</a></h3>
+<p>An <code>enum</code> type is a variant type where none of the cases have associated data:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;enum&lt;/span&gt; color &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    hot-pink&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    lime-green&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    navy-blue&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<p>This can provide a simpler representation in languages without discriminated unions. For example, a WIT <code>enum</code> can translate directly to a C++ <code>enum</code>.</p>
+<h3 id="resources"><a class="header" href="#resources">Resources</a></h3>
+<p>Resources are handles to some entity that lives outside of the component. They
+describe things that can't or shouldn't be copied by value; instead, their
+ownership or reference can be passed between two components via a handle. Unlike
+other WIT types which are simply plain data, resources only expose behavior
+through methods. Resources can be thought of as <em>objects that implement</em> an
+interface.</p>
+<p>For example, we could model a blob (binary large object) as a resource. The
+following WIT defines the <code>blob</code> resource type, which contains a constructor,
+two methods, and a static function:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;resource&lt;/span&gt; blob &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    constructor&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;init&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    write&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;bytes&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    read&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;n&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    merge&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;static&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;lhs&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; rhs&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<p>As shown in the <code>blob</code> example, a resource can contain:</p>
+<ul>
+<li><em>methods</em>: functions that implicitly take a <code>self</code> (often called <code>this</code> in many languages)
+parameter that is a handle</li>
+<li><em>static functions</em>: functions which do not have an implicit <code>self</code> parameter
+but are meant to be nested in the scope of the resource type</li>
+<li>at most one <em>constructor</em>: a function that is syntactic sugar for a function
+returning a handle of the containing resource type</li>
+</ul>
+<p>Methods always desugar to a borrowed <code>self</code> parameter whereas constructors
+always desugar to an owned return value. For example, the <code>blob</code> resource
+<a href="#resources">above</a> could be approximated as:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;resource&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+blob-constructor&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;bytes&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+blob-write&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;self&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;borrow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;blob&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; bytes&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+blob-read&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;self&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;borrow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;blob&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; n&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+blob-merge&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;static&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;lhs&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; rhs&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; blob&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<p>When a <code>resource</code> type name is wrapped with <code>borrow&lt;...&gt;</code>, it stands for a
+"borrowed" resource. A borrowed resource represents a temporary loan of a resource from the
+caller to the callee for the duration of the call. In contrast, when the owner
+of an owned resource drops that resource, the resource is destroyed.</p>
+<blockquote>
+<p>More precisely, these are borrowed or owned <code>handles</code> of the resource. Learn more about <code>handles</code> in the <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#handles">upstream component model specification</a>.</p>
+</blockquote>
+<h3 id="flags"><a class="header" href="#flags">Flags</a></h3>
+<p>A <code>flags</code> type is a set of named booleans.  In an instance of the type, each flag will be either <code>true</code> or <code>false</code>.</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;flags&lt;/span&gt; allowed-methods &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    get&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    post&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    put&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    delete&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<blockquote>
+<p>A <code>flags</code> type is logically equivalent to a record type where each field is of type <code>bool</code>, but it is represented more efficiently (as a bitfield) at the binary level.</p>
+</blockquote>
+<h3 id="type-aliases"><a class="header" href="#type-aliases">Type aliases</a></h3>
+<p>You can define a new named type using <code>type ... = ...</code>. This can be useful for giving shorter or more meaningful names to types:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;type&lt;/span&gt; buffer &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-type'&gt;type&lt;/span&gt; http-&lt;span class='hljs-type'&gt;result&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;result&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;http-response&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; http-error&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<p>A function is defined by a name and a function type. Like in record fields, the name is separated from the type by a colon:</p>
+<pre><code class="language-treesitter">do-nothing&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<p>The function type is the word <code>func</code>, followed by a parenthesised, comma-separated list of parameters (names and types). If the function returns a value, this is expressed as an arrow symbol (<code>-&gt;</code>) followed by the return type:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-comment'&gt;// This function does not return a value&lt;/span&gt;
+print&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;message&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+&lt;span class='hljs-comment'&gt;// These functions return values&lt;/span&gt;
+add&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;a&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; b&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+lookup&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;store&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; kv-store&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; key&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;option&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<p>A function can have multiple return values. In this case the return values must be named, similar to the parameter list. All return values must be populated (in the same way as tuple or record fields).</p>
+<pre><code class="language-treesitter">get-customers-paged&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;cont&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; continuation-token&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;customers&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;customer&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; cont&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; continuation-token&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<p>A function can be declared as part of an <a href="#interfaces">interface</a>, or can be declared as an import or export in a <a href="#worlds">world</a>.</p>
+<h2 id="interfaces"><a class="header" href="#interfaces">Interfaces</a></h2>
+<p>An interface is a named set of types and functions, enclosed in braces and introduced with the <code>interface</code> keyword:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;interface&lt;/span&gt; canvas &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-type'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+        &lt;span class='hljs-variable'&gt;x&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+        &lt;span class='hljs-variable'&gt;y&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+    &lt;span class='hljs-title function_'&gt;draw-line&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;canvas&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;from&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;to&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<p>Notice that items in an interface are <em>not</em> comma-separated.</p>
+<h3 id="using-definitions-from-elsewhere"><a class="header" href="#using-definitions-from-elsewhere">Using definitions from elsewhere</a></h3>
+<p>An interface can reuse types declared in another interface via a <code>use</code> directive. The <code>use</code> directive must give the interface where the types are declared, then a dot, then a braced list of the types to be reused. The interface can then refer to the types named in the <code>use</code>.</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;interface&lt;/span&gt; types &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-type'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u32&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+        &lt;span class='hljs-variable'&gt;x&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+        &lt;span class='hljs-variable'&gt;y&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt;
+    &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+&lt;span class='hljs-type'&gt;interface&lt;/span&gt; canvas &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;use&lt;/span&gt; types&lt;span class='hljs-punctuation'&gt;.&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;dimension&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; point&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-type'&gt;type&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt; &lt;span class='hljs-operator'&gt;=&lt;/span&gt; &lt;span class='hljs-type'&gt;u64&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;draw-line&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;canvas&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;canvas-id&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;from&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;to&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;point&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; &lt;span class='hljs-params'&gt;thickness&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;dimension&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<blockquote>
+<p>Even if you are only using one type, it must still be enclosed in braces. For example, <code>use types.{dimension}</code> is legal but <code>use types.dimension</code> is not.</p>
+</blockquote>
+<p>This works across files as long as the files are in the same package (effectively, in the same directory). For information about using definitions from other packages, see <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#interfaces-worlds-and-use">the specification</a>.</p>
+<h2 id="worlds"><a class="header" href="#worlds">Worlds</a></h2>
+<p>A world describes a set of imports and exports, enclosed in braces and introduced with the <code>world</code> keyword. Roughly, a world describes the contract of a component. Exports are provided by the component, and define what consumers of the component may call; imports are things the component may call. The imports and exports may be interfaces or individual functions.</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;interface&lt;/span&gt; printer &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;print&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;text&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+&lt;span class='hljs-type'&gt;interface&lt;/span&gt; error-reporter &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-title function_'&gt;report-error&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;error-message&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;string&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+&lt;span class='hljs-type'&gt;world&lt;/span&gt; multi-function-device &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-comment'&gt;// The component implements the `printer` interface&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; printer&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+    &lt;span class='hljs-comment'&gt;// The component implements the `scan` function&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; &lt;span class='hljs-title function_'&gt;scan&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;-&amp;gt;&lt;/span&gt; &lt;span class='hljs-type'&gt;list&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;lt;&lt;/span&gt;&lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;&amp;gt;&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+    &lt;span class='hljs-comment'&gt;// The component needs to be supplied with an `error-reporter`&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;import&lt;/span&gt; error-reporter&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<h3 id="interfaces-from-other-packages"><a class="header" href="#interfaces-from-other-packages">Interfaces from other packages</a></h3>
+<p>You can import and export interfaces defined in other packages. This can be done using <code>package/name</code> syntax:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;world&lt;/span&gt; http-proxy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; wasi&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;/&lt;/span&gt;incoming-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;import&lt;/span&gt; wasi&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;/&lt;/span&gt;outgoing-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<blockquote>
+<p>As this example shows, import and export apply at the interface level, not the package level. You can import one interface defined in a package, while exporting another interface defined in the same package. Packages group definitions; they don't represent behaviour.</p>
+</blockquote>
+<p>WIT does not define how packages are resolved - different tools may resolve them in different ways.</p>
+<h3 id="inline-interfaces"><a class="header" href="#inline-interfaces">Inline interfaces</a></h3>
+<p>Interfaces can be declared inline in a world:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;world&lt;/span&gt; toy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; example&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;interface&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+        &lt;span class='hljs-title function_'&gt;do-nothing&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<h3 id="including-other-worlds"><a class="header" href="#including-other-worlds">Including other worlds</a></h3>
+<p>You can <code>include</code> another world. This causes your world to export all that world's exports, and import all that world's imports.</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;world&lt;/span&gt; glow-in-the-dark-multi-function-device &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-comment'&gt;// The component provides all the same exports, and depends on&lt;/span&gt;
+    &lt;span class='hljs-comment'&gt;// all the same imports, as a `multi-function-device`...&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;include&lt;/span&gt; multi-function-device&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+    &lt;span class='hljs-comment'&gt;// ...but also exports a function to make it glow in the dark&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; &lt;span class='hljs-title function_'&gt;glow&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-keyword'&gt;func&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;(&lt;/span&gt;&lt;span class='hljs-params'&gt;brightness&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt; &lt;span class='hljs-type'&gt;u8&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;)&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<p>As with <code>use</code> directives, you can <code>include</code> worlds from other packages.</p>
+<h2 id="packages"><a class="header" href="#packages">Packages</a></h2>
+<p>A package is a set of interfaces and worlds, potentially defined across multiple files. To declare a package, use the <code>package</code> directive to specify the package ID. This must include a namespace and name, separated by a colon, and may optionally include a semver-compliant version:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-type'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;example&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-type'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;example&lt;span class='hljs-punctuation'&gt;@&lt;/span&gt;&lt;span class='hljs-string'&gt;1.0.1&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+</code></pre>
+<p>If a package spans multiple files, only one file needs to contain a package declaration (but if multiple files contain declarations then they must all be the same). All files must have the <code>.wit</code> extension and must be in the same directory. For example, the following <code>documentation:http</code> package is spread across four files:</p>
+<pre><code class="language-treesitter">&lt;span class='hljs-comment'&gt;// types.wit&lt;/span&gt;
+&lt;span class='hljs-type'&gt;interface&lt;/span&gt; types &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;request&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt; &lt;span class='hljs-comment'&gt;/* ... */&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+    &lt;span class='hljs-type'&gt;record&lt;/span&gt; &lt;span class='hljs-type'&gt;response&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt; &lt;span class='hljs-comment'&gt;/* ... */&lt;/span&gt; &lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+&lt;span class='hljs-comment'&gt;// incoming.wit&lt;/span&gt;
+&lt;span class='hljs-type'&gt;interface&lt;/span&gt; incoming-handler &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;use&lt;/span&gt; types&lt;span class='hljs-punctuation'&gt;.&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;request&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; response&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-comment'&gt;// ...&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+&lt;span class='hljs-comment'&gt;// outgoing.wit&lt;/span&gt;
+&lt;span class='hljs-type'&gt;interface&lt;/span&gt; outgoing-handler &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;use&lt;/span&gt; types&lt;span class='hljs-punctuation'&gt;.&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;request&lt;span class='hljs-punctuation'&gt;,&lt;/span&gt; response&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-comment'&gt;// ...&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+
+&lt;span class='hljs-comment'&gt;// http.wit&lt;/span&gt;
+&lt;span class='hljs-type'&gt;package&lt;/span&gt; documentation&lt;span class='hljs-punctuation'&gt;:&lt;/span&gt;http&lt;span class='hljs-punctuation'&gt;@&lt;/span&gt;&lt;span class='hljs-string'&gt;1.0.0&lt;/span&gt;&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+
+&lt;span class='hljs-type'&gt;world&lt;/span&gt; proxy &lt;span class='hljs-punctuation'&gt;{&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;export&lt;/span&gt; incoming-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+    &lt;span class='hljs-keyword'&gt;import&lt;/span&gt; outgoing-handler&lt;span class='hljs-punctuation'&gt;;&lt;/span&gt;
+&lt;span class='hljs-punctuation'&gt;}&lt;/span&gt;
+</code></pre>
+<blockquote>
+<p>For a more formal definition of the WIT language, take a look at the <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md">WIT specification</a>.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../design/worlds.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../design/packages.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../design/worlds.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../design/packages.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../treesitter.js"></script>
+
+
+    </div>
+    </body>
+</html>

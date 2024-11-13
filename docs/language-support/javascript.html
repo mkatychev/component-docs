@@ -1,0 +1,730 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>JavaScript - The WebAssembly Component Model</title>
+
+
+        <!-- Custom HTML head -->
+        <script defer data-domain="component-model.bytecodealliance.org" src="https://plausible.io/js/script.js"></script>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/head.hbs">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The WebAssembly Component Model</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/src/language-support/javascript.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
+<h1 id="javascript-tooling"><a class="header" href="#javascript-tooling">JavaScript Tooling</a></h1>
+<p><a href="https://developer.mozilla.org/en-US/docs/WebAssembly">WebAssembly</a> was originally developed as a technology for running non-Javascript workloads in the browser at near-native speed.</p>
+<p>Javascript WebAssembly component model support is provided primarily by <a href="https://github.com/bytecodealliance/jco"><code>jco</code></a>, a command line tool
+which provides tooling for building WebAssembly components.</p>
+<p><a href="https://typescriptlang.org">Typescript</a> can <em>also</em> be used, given that it is transpiled to JS first by relevant tooling (<code>tsc</code>).
+<code>jco</code> generates <a href="https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html#declaration-file-theory-a-deep-dive">type declaration files (<code>.d.ts</code>)</a> by default, and also has a <code>jco types</code>
+subcommand which generates typings that can be used with a Typescript codebase.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>While popular projects like <a href="https://emscripten.org/"><code>emscripten</code></a> also build WebAssembly modules, those modules are not Component Model aware.</p>
+<p>Core WebAssembly modules do not contain the advanced features (rich types, structured language interoperation, composition)
+that the component model makes available.</p>
+</div>
+<h2 id="installing-jco"><a class="header" href="#installing-jco">Installing <code>jco</code></a></h2>
+<p>Installing <a href="https://github.com/bytecodealliance/jco"><code>jco</code></a> (and its required peer dependency <a href="https://github.com/bytecodealliance/ComponentizeJS"><code>componentize-js</code></a>) can be done via NodeJS project tooling:</p>
+<pre><code class="language-console">npm install -g @bytecodealliance/componentize-js @bytecodealliance/jco
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p><code>jco</code> and <code>componentize-js</code> can be installed in a project-local manner with <code>npm install -D</code></p>
+</div>
+<p><a href="https://github.com/bytecodealliance/ComponentizeJS">ComponentizeJS</a> provides tooling used by <code>jco</code> to transpile JS to Wasm, so installing both packages is required.</p>
+<h2 id="overview-of-building-a-component-with-javascript"><a class="header" href="#overview-of-building-a-component-with-javascript">Overview of Building a Component with Javascript</a></h2>
+<p>Building a WebAssembly component with Javascript often consists of:</p>
+<ol>
+<li>Determining which interface our functionality will target (i.e. a <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md">WebAssembly Interface Types ("WIT")</a> world)</li>
+<li>Writing Javscript that satisfies the interface</li>
+<li>Packaging our project Javscript as WebAssembly (whether for use in WebAssembly runtimes, other JS projects, or the browser)</li>
+</ol>
+<p><a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md">WebAssembly Interface Types ("WIT")</a> is a featureful Interface Definition Language ("IDL") for defining functionality, but most
+of the time, you shouldn't need to write WIT from scratch. Often, it's sufficient to download a pre-existing interface that defines what
+your component should do.</p>
+<p>The <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/examples/example-host/add.wit"><code>example</code> world</a> exports a single <code>add</code> function that sums two numbers:</p>
+<pre><code class="language-wit">package example:component;
+
+world example {
+    export add: func(x: s32, y: s32) -&gt; s32;
+}
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p><code>export</code>ing the <code>add</code> function means that environments that interact with the resulting WebAssembly component
+will be able to <em>call</em> the <code>add</code> function.</p>
+<p>To learn more about the WIT syntax, check out the <a href="https://component-model.bytecodealliance.org/design/wit.html">WIT explainer</a></p>
+</div>
+<h2 id="implementing-a-js-webassembly-component"><a class="header" href="#implementing-a-js-webassembly-component">Implementing a JS WebAssembly Component</a></h2>
+<p>To implement the <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/examples/example-host/add.wit"><code>example</code> world</a>, we must write a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">JavaScript module</a>
+that implements the exported <code>add</code> function:</p>
+<pre><code class="language-js">export const add = (x, y) =&gt; {
+  return x + y;
+};
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>When building your Javascript project, ensure to set the <code>"type":"module"</code> option in <code>package.json</code>,
+as <code>jco</code> works exclusively with Javascript modules.</p>
+</div>
+<p>In the code above, the <code>example</code> world is analogous to the Javascript module itself, with the exported <code>add</code> function
+mirroring <code>add</code> function <code>export</code>ed in the WIT.</p>
+<p>With the WIT and Javascript in place, we can use <a href="https://github.com/bytecodealliance/jco"><code>jco</code></a> to create a WebAssembly component from the JS module, using <code>jco componentize</code>.</p>
+<p>Our component is <em>so simple</em> (reminiscent of <a href="https://webassembly.github.io/spec/core/">Core WebAssembly</a>, which deals primarily in numeric values) that we're actually <em>not using</em> any of the <a href="https://wasi.dev/">WebAssembly System Interface</a> -- this means that we can <code>--disable</code> it when we invoke <code>jco componentize</code></p>
+<pre><code class="language-console">jco componentize \
+    path/to/add.js \
+    --wit path/to/add.wit \
+    --world-name example \
+    --out add.wasm \
+    --disable all
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>If you're using <code>jco</code> as a project-local dependency, you can run <code>npx jco</code></p>
+</div>
+<p>You should see output like the following:</p>
+<pre><code>OK Successfully written add.wasm.
+</code></pre>
+<h2 id="running-the-component-in-the-example-host"><a class="header" href="#running-the-component-in-the-example-host">Running the Component in the <code>example-host</code></a></h2>
+<p>To run the component we've built, we can use the <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/examples/example-host"><code>example-host</code> project</a>:</p>
+<pre><code class="language-console">cd component-model/examples/example-host
+cargo run --release -- 1 2 ../path/to/add.wasm
+1 + 2 = 3
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>The <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/examples/example-host"><code>example-host</code> Rust project</a> uses the <a href="https://www.rust-lang.org/tools/install">Rust toolchain</a>, in particular <a href="https://doc.rust-lang.org/cargo"><code>cargo</code></a>,
+so to run the code in this section you may need to install some more dependencies.</p>
+</div>
+<p>While the output isn't exciting, the code contained in <code>example-host</code> does a lot to make it happen:</p>
+<ul>
+<li>Loads the WebAssembly binary at the provided path (in the command above, <code>../path/to/add.wasm</code>)</li>
+<li>Calls the <code>export</code>ed <code>add</code> function with arguments</li>
+<li>Prints the result</li>
+</ul>
+<p>The important Rust code looks like this:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let component = Component::from_file(&amp;engine, path).context("Component file not found")?;
+
+let (instance, _) = Example::instantiate_async(&amp;mut store, &amp;component, &amp;linker)
+    .await
+    .context("Failed to instantiate the example world")?;
+
+instance
+    .call_add(&amp;mut store, x, y)
+    .await
+    .context("Failed to call add function")
+<span class="boring">}</span></code></pre></pre>
+<p>A quick reminder on the power and new capabilities afforded by WebAssembly -- we've written, loaded, instantiated and executed Javascript from Rust with a strict interface, without the need for FFI, subprocesses or a network call.</p>
+<h2 id="running-a-component-from-javascript-applications-including-the-browser"><a class="header" href="#running-a-component-from-javascript-applications-including-the-browser">Running a Component from JavaScript Applications (including the Browser)</a></h2>
+<p>JavaScript runtimes available in browsers cannot yet execute WebAssembly components, so WebAssembly components
+(Javascript or otherwise) must be "transpiled" into a JavaScript wrapper and one or more <a href="https://webassembly.github.io/spec/core/binary/modules.html">WebAssembly core modules</a>
+which <em>can</em> be run by in-browser WebAssembly runtimes.</p>
+<p>Given an existing WebAssembly component (e.g. <code>add.wasm</code> which implements the <a href="https://github.com/bytecodealliance/component-docs/tree/main/component-model/examples/example-host/add.wit"><code>example</code> world</a>), we can "transpile" the component into runnable Javscript by using <code>jco tranpsile</code>:</p>
+<pre><code class="language-console">jco transpile add.wasm -o dist
+</code></pre>
+<p>You should see output similar to the following:</p>
+<pre><code>  Transpiled JS Component Files:
+
+ - dist/add.core.wasm                   10.1 MiB
+ - dist/add.d.ts                         0.1 KiB
+ - dist/add.js                          1.57 KiB
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>To follow along, see the <a href="https://github.com/bytecodealliance/jco/tree/main/examples/components/add"><code>jco</code> example <code>add</code> component</a>.</p>
+<p>With the project pulled locally, you also run <code>npm run transpile</code> which outputs to <code>dist/transpiled</code></p>
+</div>
+<p>Thanks to <code>jco</code> transpilation, you can import the resulting <code>dist/add.js</code> file and run it from any JavaScript application
+using a runtime that supports the <a href="https://webassembly.github.io/spec/core/">core WebAssembly specification</a> as implemented for Javascript.</p>
+<p>To use this component from <a href="https://nodejs.org/en">NodeJS</a>, you can write code like the following:</p>
+<pre><code class="language-mjs">import { add } from "./dist/add.js";
+
+console.log("1 + 2 = " + add(1, 2));
+</code></pre>
+<p>You can execute the Javascript module with <code>node</code> directly:</p>
+<pre><code class="language-console">node run.js
+</code></pre>
+<p>You should see output like the following:</p>
+<pre><code>1 + 2 = 3
+</code></pre>
+<p>This is directly comparable to the Rust host code mentioned in the previous section. Here, we are able to
+use NodeJS as a host for running WebAssembly, thanks to <code>jco</code>'s ability to transpile components.</p>
+<p>With <code>jco transpile</code> any WebAssembly binary (compiled from any language) can be run in Javascript natively.</p>
+<h2 id="building-reactor-components-with-jco"><a class="header" href="#building-reactor-components-with-jco">Building Reactor Components with <code>jco</code></a></h2>
+<p>Reactor components are WebAssembly components that are long running and meant to be called repeatedly over time. They're analogous to libraries of functionality rather than an executable (a "command" component).</p>
+<p>Components expose their interfaces via <a href="../design/wit.html">WebAssembly Interface Types</a>, hand-in-hand with the <a href="../design/why-component-model.html">Component Model</a> which enables components to use higher level types interchangably.</p>
+<h3 id="exporting-wit-interfaces-with-jco"><a class="header" href="#exporting-wit-interfaces-with-jco">Exporting WIT Interfaces with <code>jco</code></a></h3>
+<p>Packaging reusable functionality into WebAssembly components isn't useful if we have no way to <em>expose</em> that functionality. This section offers a slightly deeper dive into the usage of WIT in WebAssembly components that can use the Component Model.</p>
+<p>As in the previous example, <code>export</code>ing WIT interfaces for other components (or a WebAssembly host) to use is fundamental to developing WebAssembly programs.</p>
+<p>Let's examine a <a href="https://github.com/bytecodealliance/jco/tree/main/examples/components/string-reverse"><code>jco</code> example project called <code>string-reverse</code></a> that exposes functionality for reversing a string.</p>
+<p>To build a project like <code>string-reverse</code> from the ground up, first we'd start with a WIT like the following:</p>
+<pre><code class="language-wit">package example:string-reverse@0.1.0
+
+@since(version = 0.1.0)
+interface reverse {
+    reverse-string: func(s: string) -&gt; string;
+}
+
+world string-reverse {
+    export reverse;
+}
+</code></pre>
+<p>As a slightly deeper crash course on <a href="https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md">WIT</a>, here's what the above code describes:</p>
+<ul>
+<li>We've defined a namespace called <code>example</code></li>
+<li>We've defined a package called <code>string-reverse</code> inside the <code>example</code> namespace</li>
+<li>This WIT file corresponds to version <code>0.1.0</code> of <code>example:string-reverse</code> package</li>
+<li>We've defined an interface called <code>reverse</code> which contains <em>one</em> function called <code>reverse-string</code></li>
+<li>We specify that the <code>reverse</code> interface has existed <em>since</em> the <code>0.1.0</code> version</li>
+<li>The <code>reverse-string</code> function (AKA. <code>example:reverse-string/reverse.reverse-string</code>) takes a string and returns a string</li>
+<li>We've defined a <code>world</code> called <code>string-reverse</code> which exports the functionality provided by the <code>reverse</code> interface</li>
+</ul>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>How do we <em>know</em> that <code>reverse</code> actually reverses a string?</p>
+<p>Unfortunately, that problem is not really solvable at this level -- this is between you and the writer of the component that implements the WIT interface.</p>
+<p>Of course, with WebAssembly, you <em>can</em> enforce static checks if you're so inclined, <em>before</em> you run any given binary.</p>
+</div>
+<p>OK now let's see what the JS code looks like to <em>implement</em> the <code>component</code> world:</p>
+<pre><code class="language-js">/**
+ * This module is the JS implementation of the `string-reverse` WIT world
+ */
+
+/**
+ * This Javascript will be interpreted by `jco` and turned into a
+ * WebAssembly binary with a single export (this `reverse` function).
+ */
+function reverseString(s) {
+  return s.reverse();
+}
+
+/**
+ * The Javascript export below represents the export of the `reverse` interface,
+ * which which contains `reverse-string` as it's primary exported function.
+ */
+export const reverse = {
+    reverseString,
+};
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>To view the full code listing along with instructions, see the <a href="https://github.com/bytecodealliance/jco/tree/main/examples/components/string-reverse"><code>examples/tutorials/jco/string-reverse</code> folder</a></p>
+</div>
+<p>To use <code>jco</code> to compile this component, you can run the following from the <code>string-reverse</code> folder:</p>
+<pre><code class="language-console">npx jco componentize \
+    string-reverse.mjs \
+    --wit wit/component.wit \
+    --world-name component \
+    --out string-reverse.wasm \
+    --disable all
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>Like the previous example, we're not using any of the advanced <a href="https://wasi.dev/">WebAssembly System Interface</a> features, so we <code>--disable</code> all of them</p>
+<p>Rather than typing out the <code>jco componentize</code> command manually, you can also run
+the build command with <a href="https://github.com/bytecodealliance/jco/blob/main/examples/components/string-reverse/package.json#L6"><code>npm run build</code> from the <code>string-reverse</code> folder</a>.</p>
+</div>
+<p>You should see output like the following:</p>
+<pre><code>OK Successfully written string-reverse.wasm.
+</code></pre>
+<p>Now that we have a WebAssembly binary, we can <em>also</em> use <code>jco</code> to run it in a native Javascript context by <em>transpiling</em> the WebAsssembly binary (which could have come from anywhere!) to a Javascript module.</p>
+<pre><code class="language-console">npx jco transpile string-reverse.wasm -o dist/transpiled
+</code></pre>
+<p>You should see the following output:</p>
+<pre><code>  Transpiled JS Component Files:
+
+ - dist/transpiled/interfaces/example-string-reverse-reverse.d.ts   0.1 KiB
+ - dist/transpiled/string-reverse.core.wasm                        10.1 MiB
+ - dist/transpiled/string-reverse.d.ts                             0.15 KiB
+ - dist/transpiled/string-reverse.js                               2.55 KiB
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>A gentle reminder that, transpilation <em>does</em> produce <a href="https://www.typescriptlang.org/docs/handbook/declaration-files/deep-dive.html#declaration-file-theory-a-deep-dive">Typescript declaration file</a>, for use in Typescript projects.</p>
+</div>
+<p>Now that we have a transpiled module, we can run it from any Javascript context that supports core WebAssembly (whether NodeJS or the browser).</p>
+<p>For NodeJS, we can use code like the following:</p>
+<pre><code class="language-mjs">// If this import listed below is missing, please run `npm run transpile`
+import { reverse } from "./dist/transpiled/string-reverse.mjs";
+
+const reversed = reverse.reverseString("!dlroW olleH");
+
+console.log(`reverseString('!dlroW olleH') = ${reversed}`);
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>In the <code>jco</code> example project, you can run <code>npm run transpiled-js</code> to build the existing code.</p>
+</div>
+<p>Assuming you have the <code>dist/transpiled</code> folder populated (by running <code>jco transpile</code> in the previous step), you should see output like the following:</p>
+<pre><code>reverseString('!dlrow olleh') = hello world!
+</code></pre>
+<p>While it's somewhat redundant in this context, what we've done from NodeJS demonstrates the usefulness of WebAssembly and the <code>jco</code> toolchain. With the help of <code>jco</code>, we have:</p>
+<ul>
+<li>Compiled Javascript to a WebAssembly module (<code>jco compile</code>), adhering to an interface defined via WIT</li>
+<li>Converted the compiled WebAssembly module (which could be from <em>any</em> language) to a module that can be used from any compliant JS runtime (<code>jco transpile</code>)</li>
+<li>Run the transpiled WebAssembly component from a Javascript native runtime (NodeJS)</li>
+</ul>
+<h3 id="advanced-importing-and-reusing-wit-interfaces-via-composition"><a class="header" href="#advanced-importing-and-reusing-wit-interfaces-via-composition">Advanced: Importing and Reusing WIT Interfaces via Composition</a></h3>
+<p>Just as <code>export</code>ing functionality is core to building useful WebAssembly components, and similarly <code>import</code>ing and reusing functionality is key to using the strengths of WebAssembly.</p>
+<p>Restated, <strong>WIT and the Component Model enable WebAssembly to <em>compose</em></strong>. This means we can build on top of functionality that already exists and <code>export</code> <em>new</em> functionality that depends on existing functionality.</p>
+<p>Let's say in addition to the reversing the string (in the previous example) we want to build shared functionality that <em>also</em> upper cases the text it receives.</p>
+<p>We can reuse the reversing functionality <em>and</em> export a new interface which enables us to reverse and upper-case.</p>
+<p>Let's examine a <a href="https://github.com/bytecodealliance/jco/tree/main/examples/components/string-reverse-upper"><code>jco</code> example project called <code>string-reverse-upper</code></a> that exposes
+functionality for reversing <em>and</em> upper-casing a string.</p>
+<p>Here's the WIT one might write to enable this functionality:</p>
+<pre><code class="language-wit">package example:string-reverse-upper@0.1.0;
+
+@since(version = 0.1.0)
+interface reversed-upper {
+    reverse-and-uppercase: func(s: string) -&gt; string;
+}
+
+world revup {
+    //
+    // NOTE, the import below translates to:
+    // &lt;namespace&gt;:&lt;package&gt;/&lt;interface&gt;@&lt;package version&gt;
+    //
+    import example:string-reverse/reverse@0.1.0;
+
+    export reversed-upper;
+}
+</code></pre>
+<p>This time, the <code>world</code> named <code>revup</code> that we are building <em>relies</em> on the interface <code>reverse</code> in the package <code>string-reverse</code> from the namespace <code>example</code>.</p>
+<p>We can make use of <em>any</em> WebAssembly component that matches that interface, as long as we <em>compose</em> their functionality with the component that implements the <code>revup</code> world.</p>
+<p>The <code>revup</code> world <code>import</code>s (and makes use) of <code>reverse</code> in order to <code>export</code> (provide) the <code>reversed-upper</code> interface, which contains the <code>reverse-and-uppercase</code> function (in JS, <code>reverseAndUppercase</code>).</p>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>Functionality is imported from the <code>interface</code>, <em>not</em> the <code>world</code>. <code>world</code>s can be included/used, but the syntax is slightly different for that.</p>
+</div>
+<p>The Javascript to make this work (<a href="https://github.com/bytecodealliance/jco/blob/main/examples/components/string-reverse-upper/string-reverse-upper.mjs"><code>string-reverse-upper.mjs</code> in <code>jco/examples</code></a>) looks like this:</p>
+<pre><code class="language-js">/**
+ * This module is the JS implementation of the `revup` WIT world
+ */
+
+/**
+ * The import here is *virtual*. It refers to the `import`ed `reverse` interface in component.wit.
+ *
+ * These types *do not resolve* when the first `string-reverse-upper` component is built,
+ * but the types are relevant for the resulting *composed* component.
+ */
+import { reverseString } from 'example:string-reverse/reverse@0.1.0';
+
+/**
+ * The Javascript export below represents the export of the `reversed-upper` interface,
+ * which which contains `revup` as it's primary exported function.
+ */
+export const reversedUpper = {
+  /**
+   * Represents the implementation of the `reverse-and-uppercase` function in the `reversed-upper` interface
+   *
+   * This function makes use of `reverse-string` which is *imported* from another WebAssembly binary.
+   */
+  reverseAndUppercase() {
+    return reverseString(s).toLocaleUpperCase();
+  },
+};
+</code></pre>
+<p>We can build the component with <code>jco componentize</code>:</p>
+<pre><code class="language-console">npx jco componentize \
+    string-reverse-upper.mjs \
+    --wit wit/ \
+    --world-name revup \
+    --out string-reverse-upper.incomplete.wasm \
+    --disable all
+</code></pre>
+<p>While we've successfully built a WebAssembly component, unlike the other examples, ours is <em>not yet complete</em>.</p>
+<p>We can see that if we print the WIT of the generated component by running <code>jco wit</code>:</p>
+<pre><code class="language-console">npx jco wit string-reverse-upper.incomplete.wasm
+</code></pre>
+<p>You should see output like the following:</p>
+<pre><code>package root:component;
+
+world root {
+  import example:string-reverse/reverse@0.1.0;
+
+  export example:string-reverse-upper/reversed-upper@0.1.0;
+}
+</code></pre>
+<p>This tells us that the component still has <em>unfulfilled <code>import</code>s</em> -- we <em>use</em> the <code>reverseString</code> function that's in <code>reverse</code> as if it exists, but it's not yet a real part of the WebAssembly component (hence we've named it <code>.incomplete.wasm</code>.</p>
+<p>To compose the two components (<code>string-reverse-upper/string-reverse-upper.incomplete.wasm</code> and <code>string-reverse/string-reverse.wasm</code> we built earlier), we'll need the <a href="https://github.com/bytecodealliance/wac">WebAssembly Composition tool (<code>wac</code>)</a>. We can use <code>wac plug</code>:</p>
+<pre><code class="language-console">wac plug \
+    -o string-reverse-upper.wasm \
+    --plug ../string-reverse/string-reverse.wasm \
+    string-reverse-upper.incomplete.wasm
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>You can also run this step with <code>npm run compose</code>.</p>
+</div>
+<p>A new component <code>string-reverse-upper.wasm</code> should now be present, which is a "complete" component -- we can check the output of <code>jco wit</code> to ensure that all the imports are satisfied:</p>
+<pre><code class="language-wit">package root:component;
+
+world root {
+  export example:string-reverse-upper/reversed-upper@0.1.0;
+}
+</code></pre>
+<p>It's as-if we never imported any functionality at all -- the functionality present in <code>string-reverse.wasm</code> has been <em>merged into</em> <code>string-reverse-upper.wasm</code>, and it now simply <code>export</code>s the advanced functionality.</p>
+<p>We can run this completed component with in any WebAssembly-capable native Javascript environment by using a the transpiled result:</p>
+<pre><code class="language-console">npx jco transpile string-reverse-upper.wasm -o dist/transpiled
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>In the example project, you can run <code>npm run transpile</code> instead, which will also change the extension on <code>dist/transpiled/string-reverse-upper.js</code> to <code>.mjs</code></p>
+</div>
+<p>You should see output like the following:</p>
+<pre><code>  Transpiled JS Component Files:
+
+ - dist/transpiled/interfaces/example-string-reverse-upper-reversed-upper.d.ts  0.12 KiB
+ - dist/transpiled/string-reverse-upper.core.wasm                               10.1 MiB
+ - dist/transpiled/string-reverse-upper.core2.wasm                              10.1 MiB
+ - dist/transpiled/string-reverse-upper.d.ts                                    0.19 KiB
+ - dist/transpiled/string-reverse-upper.js                                      6.13 KiB
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>Notice that there are <em>two</em> core WebAssembly files? That's because two core WebAssembly modules were involved
+in creating the ultimate functionality we needed.</p>
+</div>
+<p>To run the transpiled component, we can write code like the following:</p>
+<pre><code class="language-mjs">/**
+ * If this import listed below is missing, please run
+ *
+ * ```
+ * npm run build &amp;&amp; npm run compose &amp;&amp; npm run transpile`
+ * ```
+ */
+import { reversedUpper } from "./dist/transpiled/string-reverse-upper.mjs";
+
+const result = reversedUpper.reverseAndUppercase("!dlroW olleH");
+
+console.log(`reverseAndUppercase('!dlroW olleH') = ${result}`);
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>In the <a href="https://github.com/bytecodealliance/jco/tree/main/examples/components/string-reverse-upper"><code>jco</code> example project</a>, you can run <code>npm run transpiled-js</code></p>
+</div>
+<p>You should see output like the following:</p>
+<pre><code>reverseAndUppercase('!dlroW olleH') = HELLO WORLD!
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../language-support/go.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../language-support/python.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../language-support/go.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../language-support/python.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../treesitter.js"></script>
+
+
+    </div>
+    </body>
+</html>
