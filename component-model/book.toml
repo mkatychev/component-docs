@@ -9,5 +9,7 @@ title = "The WebAssembly Component Model"
 git-repository-url = "https://github.com/bytecodealliance/component-docs/tree/main/component-model"
 edit-url-template = "https://github.com/bytecodealliance/component-docs/tree/main/component-model/{path}"
 additional-css = ["theme/head.hbs"]
+additional-js = ["treesitter.js"]
 
-[preprocessor.alerts]
+[preprocessor.treesitter]
+command = "mdbook-treesitter"

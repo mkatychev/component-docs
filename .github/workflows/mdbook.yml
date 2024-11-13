@@ -38,6 +38,7 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -y | sh
           rustup update
+          cargo install mdbook-treesitter
           cargo install --version ${MDBOOK_VERSION} mdbook
           cargo install --version ${ALERTS_VERSION} mdbook-alerts
       - name: Setup Pages
@@ -61,7 +62,7 @@ jobs:
 
   # Deployment job
   deploy:
-    if: ${{ github.repository_owner == 'bytecodealliance' }}
+    # if: ${{ github.repository_owner == 'bytecodealliance' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
