@@ -46,15 +46,15 @@ jobs:
         uses: actions/configure-pages@v3
       - name: Build with mdBook
         run: mdbook build component-model
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - name: Generate sitemap
-        run: |
-          cd component-model
-          python3 ../scripts/generate_sitemap.py --domain "component-model.bytecodealliance.org" --higher-priority "design" --output-path book/sitemap.xml
-          cd ..
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.13'
+      # - name: Generate sitemap
+      #   run: |
+      #     cd component-model
+      #     python3 ../scripts/generate_sitemap.py --domain "component-model.bytecodealliance.org" --higher-priority "design" --output-path book/sitemap.xml
+      #     cd ..
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
